@@ -1,6 +1,6 @@
 console.log('Day 3 ✨');
 
-export const gameResult = (fileContent: string) => {
+export const gameResultPartA = (fileContent: string) => {
   const lines = fileContent.split('\n');
   const gameValue = lines
     .map(splitContent)
@@ -10,12 +10,9 @@ export const gameResult = (fileContent: string) => {
   return gameValue;
 };
 
-export interface IHash {
-  [key: string]: number;
-}
 export interface Line {
-  partA: IHash; 
-  partB: IHash;
+  partA: Set<string>; 
+  partB: Set<string>;
   line: string
 }
 
@@ -24,17 +21,17 @@ export const splitContent = (content: string): Line => {
   const partA = content
     .substring(0, middle)
     .split('')
-    .reduce((a: IHash, b) => {
-      a[b] = 1;
+    .reduce((a, b) => {
+      a.add(b)
       return a;
-    }, {});
+    }, new Set<string>());
   const partB = content
     .substring(middle)
     .split('')
-    .reduce((a: IHash, b) => {
-      a[b] = 1;
+    .reduce((a, b) => {
+      a.add(b)
       return a;
-    }, {});
+    }, new Set<string>());
   return {
     partA,
     partB,
@@ -43,17 +40,50 @@ export const splitContent = (content: string): Line => {
 };
 
 export const findKey = ({ partA, partB, line }: Line): string => {
-  for (const key of Object.keys(partA)) {
-    if (key in partB) {
+  for (const key of partA) {
+    if (partB.has(key)) {
       return key;
     }
   }
   throw `Coult not find key in both ${JSON.stringify({partA, partB})}, line: ${line}`
-  // return '0'
 };
 
-const numberOfKey = '0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const findKeyInAllLines = (partA: Set<string>, partB: Set<string>, partC: Set<string>): string => {
+  for (const key of partA) {
+    if (partB.has(key) && partC.has(key)) {
+      return key;
+    }
+  }
+  throw `Coult not find key in both ${JSON.stringify({partA, partB, partC})}`
+};
 
+const mergeLine = (line: Line): Set<string> => {
+  return new Set([...line.partA, ...line.partB])
+}
+
+function sliceIntoChunks(arr: string[], chunkSize: number): string[][] {
+  const res = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+      const chunk = arr.slice(i, i + chunkSize);
+      res.push(chunk);
+  }
+  return res;
+}
+
+
+export const gameResultPartB = (fileContent: string): number => {
+  const content = fileContent.split('\n')
+
+  const chunks = sliceIntoChunks(content, 3)
+  return chunks.map(it => {
+    const lines = it.map(splitContent)
+    .map(mergeLine)
+    const key = findKeyInAllLines(lines[0], lines[1], lines[2])
+    return valueOfKey(key)
+  }).reduce((a, b) => a+b, 0)
+}
+
+const numberOfKey = '0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 export const valueOfKey = (key: string): number => {
   return numberOfKey.indexOf(key);
 };
