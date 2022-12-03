@@ -1,4 +1,4 @@
-console.log('Day 1 a ✨');
+console.log('Day 1 ✨');
 const input = await Deno.readTextFile('./day_1/day_1.txt');
 
 const elvesCalories = input
