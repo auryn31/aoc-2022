@@ -36,6 +36,18 @@ export const parseMove = (line: string) : {amount: number, from: number, to: num
   return {from, to, amount}
 }
 
+export const findStackLength = (content: string): number => {
+  let stackLength = 0;
+  const regex = new RegExp(/[\[]/g)
+  for(const line of content.split('\n')) {
+    const count= Array.from(line.matchAll(regex)).length
+    if(count > stackLength) {
+      stackLength = count
+    }
+  }
+  return stackLength
+}
+
 export const parseStacks = (content: string): string[][] => {
   const lines = content.split('\n')
   const stacks: string[][] = []
@@ -43,10 +55,11 @@ export const parseStacks = (content: string): string[][] => {
     const lineParts = line.split('')
     for(let i = 0; i < lineParts.length; i++) {
       if(lineParts[i] === '[') {
-        if(stacks[i%3] !== undefined) {
-          stacks[i%3] = [...stacks[i%3], lineParts[i+1]]
+        const stackNumer = Math.floor(i/4)
+        if(stacks[stackNumer] !== undefined) {
+          stacks[stackNumer] = [...stacks[stackNumer], lineParts[i+1]]
         } else {
-          stacks[i%3] = [lineParts[i+1]]
+          stacks[stackNumer] = [lineParts[i+1]]
         }
       }
     }
