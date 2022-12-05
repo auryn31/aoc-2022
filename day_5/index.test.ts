@@ -1,5 +1,5 @@
 import { assertEquals } from 'https://deno.land/std@0.167.0/testing/asserts.ts';
-import { findStackLength, gameResultPartA, makeMove, parseMove, parseStacks } from './index.ts';
+import { findStackLength, gameResultPartA, gameResultPartB, makeMove, makeMovePartB, parseMove, parseStacks } from './index.ts';
 
 Deno.test('Day 5 Part A Test', async () => {
   const input_test = await Deno.readTextFile('./day_5/input.test.txt');
@@ -7,10 +7,22 @@ Deno.test('Day 5 Part A Test', async () => {
   assertEquals(result, "CMZ");
 });
 
+Deno.test('Day 5 Part B Test', async () => {
+  const input_test = await Deno.readTextFile('./day_5/input.test.txt');
+  const result = gameResultPartB(input_test)
+  assertEquals(result, "MCD");
+});
+
 Deno.test('Day 5 Part A', async () => {
   const input_test = await Deno.readTextFile('./day_5/input.txt');
   const result = gameResultPartA(input_test)
   assertEquals(result, "HBTMTBSDC");
+});
+
+Deno.test('Day 5 Part B', async () => {
+  const input_test = await Deno.readTextFile('./day_5/input.txt');
+  const result = gameResultPartB(input_test)
+  assertEquals(result, "PQTJRSHWS");
 });
 
 Deno.test('stack 1 of input', async () => {
@@ -29,6 +41,15 @@ Deno.test('get stack of input', async () => {
   assertEquals(stacks[1], ['H','V','S','C','L','B','J','T']);
 });
 
+Deno.test('Test moves of CrateMover 9001 keep same order on moves', async () => {
+  const input_test = await Deno.readTextFile('./day_5/input.txt');
+  const parts = input_test.split('\n\n')
+  let stacks = parseStacks(parts[0])
+  assertEquals(stacks[6], ['L', 'Q', 'F']);
+  const moves = parts[1].split('\n').map(parseMove)
+  stacks = makeMovePartB(stacks, moves[0])
+  assertEquals(stacks[6], ['L', 'N', 'M', 'L', 'Q', 'F']);
+});
 
 Deno.test('moves test', async () => {
   const input_test = await Deno.readTextFile('./day_5/input.test.txt');

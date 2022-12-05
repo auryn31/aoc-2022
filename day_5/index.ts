@@ -13,9 +13,23 @@ export const gameResultPartA = (fileContent: string): string => {
   return result
 };
 
+export const gameResultPartB = (fileContent: string): string => {
+  const parts = fileContent.split('\n\n')
+  let stacks = parseStacks(parts[0])
+  const moves = parts[1].split('\n').map(parseMove)
+  for(const move of moves) {
+    stacks = makeMovePartB(stacks, move)
+  }
+  let result = ''
+  for(const stack of stacks) {
+    result += stack.shift()
+  }
+  return result
+};
+
 export const makeMove = (stacks: string[][], move: {amount: number, from: number, to: number}): string[][] => {
   for(let i = 0; i < move.amount; i++ ) {
-    const value = stacks[move.from].shift() 
+    const value = stacks[move.from].shift()
     if(typeof value !== 'string') {
       throw 'Error during shift'
     }
@@ -24,6 +38,23 @@ export const makeMove = (stacks: string[][], move: {amount: number, from: number
     } else {
       stacks[move.to] = [value, ...stacks[move.to]]
     }
+  }
+  return stacks
+}
+
+export const makeMovePartB = (stacks: string[][], move: {amount: number, from: number, to: number}): string[][] => {
+  const placeholder: string[] = []
+  for(let i = 0; i < move.amount; i++ ) {
+    const value = stacks[move.from].shift();
+    if(typeof value !== 'string') {
+      throw 'Error during shift'
+    }
+    placeholder.push(value)
+  }
+  if(stacks[move.to] === undefined) {
+    stacks[move.to] = placeholder
+  } else {
+    stacks[move.to] = [...placeholder, ...stacks[move.to]]
   }
   return stacks
 }
