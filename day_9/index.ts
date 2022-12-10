@@ -20,7 +20,6 @@ const followHead = (
   posTail: number[],
   move: 'R' | 'U' | 'L' | 'D'
 ): number[] => {
-  //console.log(`Check   H:${posHead} T:${posTail}`)
   if (
     posHead[0] == posTail[0] ||
     posHead[1] == posTail[1] ||
@@ -61,11 +60,8 @@ for (const line of input_test.split('\n')) {
     posHead = makeMove(posHead, direction);
     posTail = followHead(posHead, posTail, direction);
     visitedPositions.add(`${posTail[0]}${posTail[1]}`);
-    console.log(`result: H:${posHead} T:${posTail}, moveDirection: ${direction}`);
+    // console.log(`result: H:${posHead} T:${posTail}, moveDirection: ${direction}`);
   }
 }
 
-console.log(visitedPositions.size -1 );
-console.log(Array.from(visitedPositions).sort());
-
-// 00, 01, 02, 03, 14, 21, 22, 23, 24, 33, 34, 42, 43
+console.log(`Solution Part 1: ${visitedPositions.size} 🎉`); //5981
